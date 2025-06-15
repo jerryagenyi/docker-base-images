@@ -1,0 +1,146 @@
+version: '3.8'
+
+services:
+  # =============================================
+  # Base Development Images
+  # =============================================
+  
+  # Python base - Foundation for Python applications  python-base:
+    build:
+      # Use relative path from your project to this base images directory
+      context: ../../docker-base-images/python-base
+      dockerfile: Dockerfile
+    volumes:
+      # Mount your project's code into the container
+      - ./:/app
+      # Mount your project's requirements.txt for dependencies
+      - ./requirements.txt:/app/requirements.txt
+    # Common Python framework ports:
+    # - Flask/Django development server: 8000
+    # - FastAPI: 8000
+    # - Jupyter: 8888
+    # - Streamlit: 8501
+    ports:
+      - "8000:8000"  # For web frameworks (Flask/Django/FastAPI)
+      - "8888:8888"  # For Jupyter notebooks (if needed)
+    # Install project-specific requirements at startup
+    command: >
+      sh -c "if [ -f requirements.txt ]; then pip install -r requirements.txt; fi && python app.py"
+
+  # Node.js base - Foundation for Node.js applications
+  node-base:
+    build:
+      context: ./node-base
+      dockerfile: Dockerfile
+    volumes:
+      - ./node-base/app:/app
+    # ports:
+    #   - "3000:3000"
+
+  # =============================================
+  # Data & ML Infrastructure
+  # =============================================
+  
+  # PostgreSQL - Database service
+  postgres:
+    build:
+      context: ./postgres
+      dockerfile: Dockerfile
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: mydb
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  # Miniconda - For data science and ML environments
+  miniconda:
+    build:
+      context: ./miniconda
+      dockerfile: Dockerfile
+    volumes:
+      - ./miniconda/app:/app
+    # Depends on postgres if you're using it for data storage
+    # depends_on:
+    #   - postgres
+
+  # PyTorch - For AI/ML workloads
+  pytorch:
+    build:
+      context: ./pytorch
+      dockerfile: Dockerfile
+    volumes:
+      - ./pytorch/app:/app
+    # Add GPU support if needed
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+
+  # =============================================
+  # Web Infrastructure
+  # =============================================
+  
+  # Nginx - Web server / reverse proxy
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    # Uncomment if this should proxy to other services
+    # depends_on:
+    #   - python-base
+    #   - node-base
+
+  # Caddy - Modern web server with automatic HTTPS
+  caddy:
+    build:
+      context: ./caddy
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+    # Uncomment if this should proxy to other services
+    # depends_on:
+    #   - python-base
+    #   - node-base
+
+  # =============================================
+  # Testing Infrastructure
+  # =============================================
+  
+  # Selenium - For browser testing
+  selenium:
+    build:
+      context: ./selenium
+      dockerfile: Dockerfile
+    volumes:
+      - ./selenium/tests:/app
+    # Uncomment if your tests need to access other services
+    # depends_on:
+    #   - python-base
+    #   - node-base
+
+# =============================================
+# Persistent Volumes
+# =============================================
+volumes:
+  postgres_data:
+  caddy_data:
+  caddy_config:
+
+# =============================================
+# Networks (uncomment if you need custom networking)
+# =============================================
+# networks:
+#   frontend:
+#   backend:
