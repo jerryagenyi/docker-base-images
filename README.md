@@ -370,6 +370,44 @@ Pre-configured deployment templates:
   - Volume configuration
   - Service dependencies
 
+## Design Principles
+
+### Hardware Agnostic Base Images
+
+Our base images are designed to be hardware-agnostic, following these principles:
+
+1. **Flexibility First**: Base images provide fundamental tools and libraries while allowing users to add hardware-specific optimizations.
+2. **Extensibility**: Each base image is designed to be easily extended for specific use cases:
+   - GPU support (NVIDIA CUDA, AMD ROCm, DirectML)
+   - CPU optimizations
+   - Special hardware acceleration
+
+### Example: Extending Base Images
+
+For instance, our `pytorch` base image provides common ML/DL dependencies without assuming specific hardware. Users can extend it for their needs:
+
+```dockerfile
+# NVIDIA GPU Support
+FROM jerryagenyi/pytorch-base
+RUN pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+
+# AMD GPU Support
+FROM jerryagenyi/pytorch-base
+RUN pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm5.6
+
+# CPU-Only
+FROM jerryagenyi/pytorch-base
+RUN pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+```
+
+### Benefits of This Approach
+
+1. **Universal Compatibility**: Base images work across different hardware setups
+2. **Reduced Maintenance**: No need for multiple hardware-specific base images
+3. **Better User Experience**: Users can easily customize for their environment
+4. **Smaller Base Images**: Only include what's necessary
+5. **Future-Proof**: Easily adaptable to new hardware technologies
+
 ## Contributing
 
 The project follows a structured organization to maintain clarity and scalability. When contributing:

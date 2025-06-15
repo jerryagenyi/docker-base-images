@@ -1,7 +1,19 @@
-FROM pytorch/pytorch:latest
-WORKDIR /app
+ARG PYTHON_VERSION=3.10
+ARG BASE_IMAGE=python:${PYTHON_VERSION}-slim
 
-# Install common ML/DL packages
+FROM ${BASE_IMAGE}
+
+LABEL maintainer="Jerry Agenyi"
+LABEL description="Hardware-agnostic ML/DL base image"
+
+# System dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    git \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install common ML/DL packages without PyTorch
 RUN pip install --no-cache-dir \
     numpy \
     pandas \
@@ -10,9 +22,6 @@ RUN pip install --no-cache-dir \
     seaborn \
     jupyter \
     tensorboard \
-    torchvision \
-    torchaudio \
-    transformers \
     opencv-python-headless \
     albumentations
 
@@ -23,11 +32,27 @@ RUN pip install --no-cache-dir \
     isort \
     jupyter-lab
 
-# Script to install additional requirements
-COPY <<-"EOT" /app/entrypoint.sh
+# Create non-root user
+RUN useradd -m -s /bin/bash ml-user && \
+    mkdir -p /app && \
+    chown ml-user:ml-user /app
+
+# Set up working directory
+WORKDIR /app
+
+# Switch to non-root user
+USER ml-user
+
+# Environment variables for better Python behavior
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1
+
+# Script to install additional requirements (including PyTorch)
+COPY --chown=ml-user:ml-user <<-"EOT" /app/entrypoint.sh
 #!/bin/bash
 if [ -f requirements.txt ]; then
-    pip install -r requirements.txt
+    pip install --user -r requirements.txt
 fi
 exec "$@"
 EOT
@@ -35,4 +60,4 @@ EOT
 RUN chmod +x /app/entrypoint.sh
 
 ENTRYPOINT ["/app/entrypoint.sh"]
-CMD ["python", "train.py"]
+CMD ["python", "-m", "jupyter", "lab", "--ip=0.0.0.0", "--allow-root", "--no-browser"]
