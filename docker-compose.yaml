@@ -5,7 +5,8 @@ services:
   # Base Development Images
   # =============================================
   
-  # Python base - Foundation for Python applications  python-base:
+  # Python base - Foundation for Python applications
+  python-base:
     build:
       # Use relative path from your project to this base images directory
       context: ../../docker-base-images/python-base
