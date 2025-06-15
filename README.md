@@ -299,3 +299,84 @@ This repository uses Docker containers for several critical benefits:
    - Isolated execution environments
    - Controlled access to system resources
    - Reduced attack surface through containerization
+
+## Project Structure
+
+```
+docker-base-images/
+├── caddy/                 # Caddy web server with automatic HTTPS
+│   └── Dockerfile         # Base image for Caddy server
+├── miniconda/             # Python scientific computing environment
+│   └── Dockerfile         # Base image with Miniconda pre-installed
+├── nginx/                 # NGINX web server and reverse proxy
+│   └── Dockerfile         # Base image for NGINX
+├── node-base/             # Node.js development environment
+│   └── Dockerfile         # Base image with Node.js and common tools
+├── postgres/              # PostgreSQL database server
+│   └── Dockerfile         # Base image for PostgreSQL with common extensions
+├── python-base/           # Python development environment
+│   └── Dockerfile         # Base image with configurable Python version
+├── pytorch/               # PyTorch for machine learning
+│   └── Dockerfile         # Base image with CUDA support
+├── selenium/              # Browser automation and testing
+│   └── Dockerfile         # Base image with Selenium and browsers
+├── docs/                  # Project documentation
+│   ├── blog-post.md       # Blog post about the project and its use cases
+│   ├── profiles.md        # Documentation for profile configurations
+│   └── project-summary.md # Technical overview and architecture details
+├── profiles/              # Pre-configured deployment profiles
+│   ├── minimal.yaml       # Minimal resource configuration
+│   ├── standard.yaml      # Standard production configuration
+│   └── full.yaml          # Full-featured development configuration
+├── docker-init.sh         # Linux/macOS initialization script
+├── docker-init.ps1        # Windows PowerShell initialization script
+├── docker-compose.yaml    # Multi-container orchestration
+├── .gitignore             # Git ignore patterns
+└── README.md              # Project documentation and getting started guide
+
+```
+
+### Key Components
+
+#### Base Images
+Each base image directory contains:
+- `Dockerfile` with best practices and common tools
+- Optional configuration files and scripts
+- Image-specific documentation when needed
+
+#### Documentation (`docs/`)
+- `blog-post.md`: Outreach content explaining project benefits and use cases
+- `profiles.md`: Detailed explanation of available deployment profiles
+- `project-summary.md`: Technical documentation and architecture overview
+
+#### Profiles (`profiles/`)
+Pre-configured deployment templates:
+- `minimal.yaml`: Lightweight configuration for basic needs
+- `standard.yaml`: Balanced setup for most production cases
+- `full.yaml`: Complete setup with all features enabled
+
+#### Initialization Scripts
+- `docker-init.sh`: Linux/macOS setup script with:
+  - Interactive service selection
+  - Environment configuration
+  - Profile management
+  - Update mechanisms
+- `docker-init.ps1`: Windows PowerShell equivalent
+
+#### Orchestration
+- `docker-compose.yaml`: Main service configuration and orchestration
+  - Resource management
+  - Network setup
+  - Volume configuration
+  - Service dependencies
+
+## Contributing
+
+The project follows a structured organization to maintain clarity and scalability. When contributing:
+
+1. **Base Images**: Add new images in their own directories with comprehensive Dockerfiles
+2. **Documentation**: Update relevant docs in the `docs/` directory
+3. **Profiles**: Add new deployment profiles to the `profiles/` directory
+4. **Scripts**: Maintain cross-platform compatibility in initialization scripts
+
+See our [Contributing Guide](CONTRIBUTING.md) for detailed guidelines.
