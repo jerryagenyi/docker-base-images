@@ -4,6 +4,26 @@ A collection of ready-to-use Docker base images for various development environm
 
 ## 🚀 Quick Start
 
+### Python Version Note
+The base Python image is configured to be version-flexible. You can:
+- Use the default version (currently 3.10)
+- Override it in your project's docker-compose.yaml:
+  ```yaml
+  services:
+    app:
+      build:
+        context: ../docker-base-images/python-base
+        dockerfile: Dockerfile
+        args:
+          PYTHON_VERSION: "3.11"  # or 3.12, or any version you need
+  ```
+- Choose based on your project's requirements
+- Consider factors like:
+  - Package compatibility
+  - Framework requirements
+  - Production environment constraints
+  - Stability vs new features
+
 ### Initial Setup (One-time)
 
 1. Create a directory for your projects (if you don't have one):
@@ -250,3 +270,32 @@ docker-compose build --no-cache
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Why Docker?
+
+This repository uses Docker containers for several critical benefits:
+
+1. **Isolation & Dependency Management**
+   - Keep project dependencies contained and avoid polluting your global system
+   - No need to install Python, Node.js, or other runtimes globally
+   - Prevent version conflicts between different projects
+
+2. **Consistency & Reproducibility**
+   - Identical development environment across all team members
+   - "Works on my machine" becomes "Works in every container"
+   - Version-locked dependencies ensure stable builds
+
+3. **Portability & Migration**
+   - Easy migration between development machines
+   - Seamless deployment to any environment that runs Docker
+   - Cloud-ready configuration for quick scaling
+
+4. **Resource Management**
+   - Controlled resource allocation per container
+   - Easy cleanup - just remove the container
+   - Efficient use of system resources
+
+5. **Security**
+   - Isolated execution environments
+   - Controlled access to system resources
+   - Reduced attack surface through containerization

@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: ${BASE_IMAGES_PATH}/python-base
+      dockerfile: Dockerfile
+      args:
+        PYTHON_VERSION: ${PYTHON_VERSION:-3.10}
+    volumes:
+      - .:/app
+    ports:
+      - "${APP_PORT:-8000}:8000"
+    env_file: .env
+    # Development optimizations
+    develop:
+      watch:
+        - action: sync
+          path: .
+          target: /app
+        - action: rebuild
+          path: requirements.txt
