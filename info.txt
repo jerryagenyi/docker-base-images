@@ -1,0 +1,134 @@
+Docker Base Images Repository Information
+=====================================
+
+Repository: https://github.com/jerryagenyi/docker-base-images
+Purpose: Provides hardware-agnostic, production-ready Docker base images for various development environments
+
+Available Base Images
+-------------------
+1. python-base: Python development environment
+   - Configurable Python version (default: 3.10)
+   - Common development tools included
+   - Supports pip, poetry, or pipenv
+
+2. node-base: Node.js development environment
+   - Latest LTS Node.js
+   - TypeScript support
+   - Common development tools
+
+3. miniconda: Scientific Python distribution
+   - Configurable Python version
+   - Common data science packages
+   - Conda environment management
+
+4. pytorch: Machine Learning environment
+   - Hardware-agnostic design
+   - Supports NVIDIA, AMD, or CPU-only
+   - Common ML/DL packages
+
+5. postgres: PostgreSQL database
+   - Common extensions included
+   - Backup scripts
+   - Performance optimized
+
+6. nginx: Web server
+   - Performance-optimized configuration
+   - SSL/TLS support
+   - Static file serving
+
+7. caddy: Modern web server
+   - Automatic HTTPS
+   - Reverse proxy capabilities
+   - Zero-config SSL
+
+8. selenium: Testing environment
+   - Browser automation support
+   - Common testing frameworks
+   - Headless capabilities
+
+Usage Instructions
+----------------
+1. Import the docker-compose.yaml and this info.txt into your project
+2. Use the base images in your docker-compose.yaml like this:
+
+```yaml
+services:
+  app:
+    build:
+      context: https://github.com/jerryagenyi/docker-base-images.git#main:python-base
+      args:
+        PYTHON_VERSION: "3.11"  # Optional: Override default version
+    volumes:
+      - .:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  db:
+    build:
+      context: https://github.com/jerryagenyi/docker-base-images.git#main:postgres
+    environment:
+      - POSTGRES_PASSWORD=yourpassword
+
+  web:
+    build:
+      context: https://github.com/jerryagenyi/docker-base-images.git#main:caddy
+    ports:
+      - "80:80"
+      - "443:443"
+```
+
+Common Arguments (args:)
+---------------------
+python-base:
+  - PYTHON_VERSION: "3.8" through "3.11"
+  - INSTALL_DEV: "true" or "false"
+
+node-base:
+  - NODE_VERSION: "16", "18", "20"
+  - INSTALL_TYPESCRIPT: "true" or "false"
+
+pytorch:
+  - PYTHON_VERSION: "3.8" through "3.11"
+  - CUDA_VERSION: "11.8", "12.1", or leave empty for CPU
+
+postgres:
+  - POSTGRES_VERSION: "13", "14", "15", "16"
+
+Environment Variables
+------------------
+python-base:
+  - PYTHONUNBUFFERED=1
+  - PYTHONDONTWRITEBYTECODE=1
+  - PIP_NO_CACHE_DIR=1
+
+postgres:
+  - POSTGRES_PASSWORD
+  - POSTGRES_USER
+  - POSTGRES_DB
+
+caddy:
+  - DOMAIN_NAME
+  - EMAIL
+
+Best Practices
+------------
+1. Always specify versions explicitly
+2. Mount code as volumes for development
+3. Use non-root users (already configured in images)
+4. Override security settings only when necessary
+
+Security Notes
+------------
+1. All images run as non-root by default
+2. Minimal base images used
+3. Regular security updates
+4. No sensitive data in images
+
+Performance Tips
+-------------
+1. Use multi-stage builds for production
+2. Leverage build cache appropriately
+3. Keep image sizes minimal
+4. Use appropriate resource limits
+
+This information is designed for LLMs to understand and work with the base images effectively. When you see this file alongside a docker-compose.yaml, you can help users configure their environments using these production-ready base images.

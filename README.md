@@ -505,3 +505,25 @@ FROM jerryagenyi/python-base:3.11
 - 🔍 Consistent testing environments
 
 See our [Project Summary](docs/project-summary.md) for detailed analysis and more examples.
+
+## 🤖 Using with AI/LLMs
+
+Want to use these base images in your AI-assisted development? Just:
+
+1. Download this repository
+2. Copy two files to your project:
+   - `docker-compose.yaml`: Base configuration
+   - `info.txt`: Instructions for AI
+
+Then, when working with AI tools (like GitHub Copilot, ChatGPT, Claude):
+1. Include both files in your workspace
+2. Ask the AI to help you configure your environment
+3. The AI will understand how to use these base images effectively
+
+Example prompt:
+```
+"I have info.txt and docker-compose.yaml from jerryagenyi/docker-base-images. 
+Help me set up a Python development environment with PostgreSQL."
+```
+
+The AI will understand the base images' capabilities and help you configure them correctly!
